@@ -1114,6 +1114,7 @@ fun PlayerScreen(file: File, engine: RecorderEngine, settings: AppSettingsState,
 
 @Composable
 fun TrimCutScreen(file: File, engine: RecorderEngine, settings: AppSettingsState, language: String, onBack: () -> Unit, onDone: (File) -> Unit) {
+    val context = LocalContext.current
     var trimMode by remember { mutableStateOf(true) }
     var start by remember { mutableStateOf(0.12f) }
     var end by remember { mutableStateOf(0.82f) }
@@ -1143,7 +1144,7 @@ fun TrimCutScreen(file: File, engine: RecorderEngine, settings: AppSettingsState
         TrimWaveform(trimMode = trimMode, start = start, end = end, modifier = Modifier.fillMaxWidth().height(410.dp))
         Spacer(Modifier.height(30.dp))
         Row(Modifier.fillMaxWidth().padding(horizontal = 44.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            ToolIcon("◩") { toast(LocalContext.current, "Fade tool toggled") }
+            ToolIcon("◩") { toast(context, "Fade tool toggled") }
             SmallRoundControl("|‹") { engine.seekBy(-5) }
             GradientRoundButton(label = if (engine.isPlaying) "▮▮" else "▶", size = 92.dp) { engine.play(file) }
             SmallRoundControl("›|") { engine.seekBy(5) }
@@ -1242,6 +1243,7 @@ fun SettingsScreen(
     onRate: () -> Unit,
     onManage: () -> Unit
 ) {
+    val context = LocalContext.current
     var optionDialog by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
     Column(Modifier.fillMaxSize().background(Bg).statusBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -1259,7 +1261,7 @@ fun SettingsScreen(
             SettingsRow("Tag management", null, arrow = true) { optionDialog = "Tag management" to listOf("Work", "Lecture", "Music", "Important") }
             SettingsRow("Language", languageTitle(settings.languageCode), arrow = true, onClick = onLanguage)
             SectionTitle("Recording")
-            SettingsRow("Storage path", engine.displayStoragePath(), arrow = true) { toast(LocalContext.current, engine.displayStoragePath()) }
+            SettingsRow("Storage path", engine.displayStoragePath(), arrow = true) { toast(context, engine.displayStoragePath()) }
             SettingsRow("Recording quality", settings.recordingQuality, arrow = true) { optionDialog = "Recording quality" to listOf("High (CD)", "Medium", "Low") }
             SettingsRow("Recording format", settings.recordingFormat, arrow = true) { optionDialog = "Recording format" to listOf("M4A", "AAC", "MP4") }
             SettingsRow("Audio source", settings.audioSource, arrow = true) { optionDialog = "Audio source" to listOf("Main (unprocessed)", "Main", "Voice recognition", "Camcorder") }
